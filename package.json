@@ -1,12 +1,12 @@
 {
-  "name": "amazing",
+  "name": "components_library",
   "version": "0.1.0",
   "private": true,
   "description": "",
   "author": "",
   "repository": {
     "type": "git",
-    "url": "git@github.com:tutti-frutti/amazing.git"
+    "url": "git@github.com:tutti-frutti/components_library.git"
   },
   "bugs": {
     "url": ""
