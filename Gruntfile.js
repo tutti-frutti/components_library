@@ -1,65 +1,188 @@
 "use strict";
 
-module.exports = function(grunt) {
-  grunt.loadNpmTasks("grunt-browser-sync");
-  grunt.loadNpmTasks("grunt-contrib-watch");
-  grunt.loadNpmTasks("grunt-postcss");
-  grunt.loadNpmTasks("grunt-sass");
+module.exports = function (grunt) {
+    grunt.loadNpmTasks("grunt-browser-sync");
+    grunt.loadNpmTasks("grunt-contrib-watch");
+    grunt.loadNpmTasks("grunt-postcss");
+    grunt.loadNpmTasks("grunt-sass");
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-csso');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-bake');
+    grunt.loadNpmTasks('grunt-spritesmith');
 
-  grunt.initConfig({
-    sass: {
-      style: {
-        files: {
-          "css/style.css": "sass/style.scss"
-        }
-      }
-    },
+    grunt.initConfig({
+        sass: {
+            style: {
+                files: {
+                    "assets/css/avangard.css": "assets/sass/style.scss"
+                }
+            }
+        },
 
-    postcss: {
-      style: {
-        options: {
-          processors: [
-            require("autoprefixer")({browsers: [
+        csso: {
+            style: {
+                options: {
+                    report: "gzip"
+                },
+                files: {
+                    // основной файл css
+                    "assets/css/avangard.min.css": ["assets/css/avangard.css"],
+                    // файлы css из плагинов для минификации и объеденения
+                    "assets/css/library.min.css": [
+                    'node_modules/fancybox/dist/css/jquery.fancybox.css',
+                ]
+                }
+            }
+        },
+
+        postcss: {
+            style: {
+                options: {
+                    processors: [
+            require("autoprefixer")({
+                            browsers: [
               "last 1 version",
               "last 2 Chrome versions",
               "last 2 Firefox versions",
               "last 2 Opera versions",
               "last 2 Edge versions"
-            ]})
+            ]
+        })
           ]
+                },
+                src: "assets/css/*.css"
+            }
         },
-        src: "css/*.css"
-      }
-    },
 
-    browserSync: {
-      server: {
-        bsFiles: {
-          src: [
-            "*.html",
-            "css/*.css"
-          ]
+        browserSync: {
+            server: {
+                bsFiles: {
+                    src: ["*.html", "assets/css/*.css", "assets/js/*.js"]
+                },
+                options: {
+                    server: ".",
+                    watchTask: true,
+                    notify: false,
+                    open: true,
+                    ui: false
+                }
+            }
         },
-        options: {
-          server: ".",
-          watchTask: true,
-          notify: false,
-          open: true,
-          ui: false
-        }
-      }
-    },
 
-    watch: {
-      style: {
-        files: ["sass/**/*.{scss,sass}"],
-        tasks: ["sass", "postcss"],
-        options: {
-          spawn: false
-        }
+        watch: {
+            bake: {
+                files: ["app/*.html"],
+                tasks: ["bake:build"]
+            },
+                    html: {
+                        files: ["*.html"],
+//                        tasks: ["copy:html"]
+                    },
+
+            style: {
+                files: ["assets/sass/**/*.{scss,sass}"],
+                tasks: ["sass", "postcss", "csso"],
+                options: {
+                    spawn: false
+                }
+            }
+        },
+
+        copy: {
+            build: {
+                files: [{
+                    expand: true,
+                    src: [
+                    "assets/fonts/**/*.{woff, woff2}",
+                    "assets/img/**",
+                    "assets/js/**",
+                    "assets/css/**",
+//                    "*.html"
+                ],
+                    dest: "public"
+            }]
+            },
+            html: {
+                files: [{
+                    expand: true,
+                    src: ["*.html"],
+                    dest: "public"
+            }]
+            }
+        },
+
+        clean: {
+            build: ["public"],
+        },
+
+        concat: {
+            options: { // "включает" использование баннера
+                stripBanners: true,
+                banner: "/**/"
+            },
+            dist: {
+                // файлы для склеивания
+                src: [
+                    'node_modules/fancybox/dist/js/jquery.fancybox.pack.js'
+                ],
+                // где будут находиться склеенные файлы
+                dest: 'assets/js/project.js'
+            }
+
+        },
+        uglify: { // сжатие файлов js
+            my_target: {
+                options: {
+                    beautify: true
+                },
+                files: {
+                    //минификация в той же папке, где и основной файл 
+                    "assets/js/project.min.js": ['assets/js/project.js']
+                }
+            }
+        },
+        bake: { // команда "grunt bake"
+            build: {
+                options: {
+                    content: "app/content.json",
+                    section: "de"
+                },
+
+                files: {
+                    // указываются из каких шаблонов формируются готовые страницы
+                    // из base.html в index.html
+                    'index1.html': 'app/base.html',
+                }
+            }
+        },
+        sprite:{
+      all: {
+        src: 'img/sprites/*.png',
+        dest: 'img/sprites/arrows.png',
+        destCss: 'css/sprites.css',
+        padding: 20,
+        algorithm: 'top-down'
       }
     }
-  });
 
-  grunt.registerTask("serve", ["browserSync", "watch"]);
+    });
+
+    grunt.registerTask("serve", [
+    "sass", 
+    "csso",
+    "concat",
+    "uglify",
+    "browserSync",
+    "watch",
+    "bake",
+  ]);
+    grunt.registerTask("build", [
+    "clean",
+    "copy",
+    "concat",
+    "postcss",
+  ]);
 };

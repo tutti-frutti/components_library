@@ -1,0 +1,132 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style: none;
+}
+
+ul, h1, h2, h3, h4, h5, h6, p {
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+img {
+    max-width: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+.center {
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    &._width {
+        width: 100%;
+    }
+    @media #{$tablet} {
+        width: 98%;
+    }
+    &._bg {
+        background: url("../img/bg-corner.png") no-repeat right bottom transparent;
+        @media #{$mobile} {
+            background: none;
+        }
+    }
+    &._mb {
+        margin-bottom: 10px;
+    }
+    &._mb-2 {
+        margin-bottom: 15px;
+    }
+    @media #{$mobile} {
+            width: 98%;
+        }
+}
+
+// correct paddings and margins of
+// default style.css
+// main content and footer
+#custom-decor {
+    .middle {
+        max-width: 960px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 0;
+    }
+}
+
+aside._no-margin {
+    margin-left: 0;
+    @media #{$mobile} {
+        margin: 15px auto;
+    }
+    @media #{$tablet} {
+        display: block;
+        float: none;
+        margin: 15px auto;
+//        max-width: 540px;
+    }
+}
+
+//div.price._ml {
+//    margin-left: 0;
+//}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+::-webkit-input-placeholder {
+    font-family: 'Calibri';
+    color: #434343;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    }
+::-moz-placeholder          {
+    font-family: 'Calibri';
+    color: #434343;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    }/* Firefox 19+ */
+:-moz-placeholder           {
+    font-family: 'Calibri';
+    color: #434343;
+    font-size: 18px;
+    text-overflow: ellipsis;
+}/* Firefox 18- */
+    :-ms-input-placeholder      {
+    font-family: 'Calibri';
+    color: #434343;
+    font-size: 18px;
+    text-overflow:ellipsis;
+}
+
+@font-face {
+	font-family: 'Calibri';
+	src: url('../fonts/Calibri.eot');
+	src: url('../fonts/Calibri.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/Calibri.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Myriad Pro';
+	src: url('../fonts/MyriadPro-Bold.eot');
+	src: url('../fonts/MyriadPro-Bold.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/MyriadPro-Bold.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+}
